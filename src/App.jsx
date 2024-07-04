@@ -5,6 +5,8 @@ import MainLayout from "./components/MainLayout";
 import AuthLayout from "./components/AuthLayout";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import HomePage from "./pages/HomePage";
+import AuthProvider from "./context/AuthContext";
 
 const loggedInUser = { username: "baba" };
 
@@ -19,7 +21,7 @@ function ProtectedRoute({ children }) {
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Routes>
         <Route
           path="/"
@@ -29,7 +31,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<div>home</div>} />
+          <Route index element={<HomePage/>} />
           <Route path="about" element={<div>about</div>} />
           <Route path="contact" element={<div>contact</div>} />
           <Route path="task" element={<div>tasks</div>} />
@@ -40,7 +42,7 @@ function App() {
           <Route path="register" element={<RegisterPage />} />
         </Route>
       </Routes>
-    </>
+    </AuthProvider>
   );
 }
 

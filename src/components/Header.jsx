@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 import { ModeToggle } from "@/components/mode-toggle";
@@ -12,28 +11,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
 
 const loggedInUser = { username: "baba" };
 
 function Header() {
   return (
     <header className="bg-white/5 px-4 flex justify-between items-center h-14">
-      <div>
-        <Link className="text-primary uppercase font-bold text-xl" to="/">
-          Logo
-        </Link>
-      </div>
+    <div className="flex items-center gap-2">
+      <Link className="text-primary font-bold text-xl flex items-center" to="/">
+        <img className="h-8 w-8 mr-2 rounded-lg" src="src\assets\logo.jpeg" alt="Logo" />
+        NoteNimbus
+      </Link>
+    </div>
       <nav>
-        <ul className="flex gap-2">
+        <ul className="flex gap-4">
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/task">Notes</Link>
           </li>
           <li>
             <Link to="/contact">Contact</Link>
-          </li>
-          <li>
-            <Link to="/task">Tasks</Link>
           </li>
         </ul>
       </nav>
@@ -49,14 +45,13 @@ function Header() {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <Link>My Account</Link>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link>Profile</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
             <DropdownMenuSeparator />
 
             <DropdownMenuItem>Logout</DropdownMenuItem>

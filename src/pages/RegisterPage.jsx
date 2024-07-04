@@ -1,4 +1,3 @@
-import React from "react";
 
 import {
   Card,
@@ -15,7 +14,7 @@ import { LogIn } from "lucide-react";
 
 function RegisterPage() {
   return (
-    <Card className="shadow-2xl">
+    <Card className="shadow-2xl min-w-96">
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <span>Register</span> <LogIn />
