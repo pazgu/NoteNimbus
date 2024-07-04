@@ -1,7 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { Link } from "react-router-dom";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 import {
   DropdownMenu,
@@ -12,9 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const loggedInUser = { username: "baba" };
-
 function Header() {
+  const loggedInUser = {username: "baba"}
+  const { logout } = useContext(AuthContext);
   return (
     <header className="bg-white/5 px-4 flex justify-between items-center h-14">
     <div className="flex items-center gap-2">
@@ -53,8 +56,11 @@ function Header() {
               <Link>Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            {loggedInUser && (
+              <DropdownMenuItem onClick={() => logout()}>
+                Logout
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
         <ModeToggle />
