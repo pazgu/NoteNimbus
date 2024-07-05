@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 function Header() {
-  const loggedInUser = {username: "baba"}
-  const { logout } = useContext(AuthContext);
+  // const loggedInUser = {username: "baba", id: "123345dsfasd"}
+  const { loggedInUser, logout } = useContext(AuthContext);
+  
   return (
     <header className="bg-white/5 px-4 flex justify-between items-center h-14">
     <div className="flex items-center gap-2">
@@ -41,9 +42,9 @@ function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar className="h-8 w-8">
-              <AvatarImage src={loggedInUser.imgUrl} />
+              {/* <AvatarImage src={loggedInUser?.imgUrl} /> */}
               <AvatarFallback>
-                {loggedInUser.username[0].toUpperCase()}
+                {/* {loggedInUser?.username[0].toUpperCase()} */}
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
@@ -53,7 +54,7 @@ function Header() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link to={"/profile"}>Profile</Link>
+              <Link to={`/profile/${loggedInUser?.userId}`}>Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => logout()}>

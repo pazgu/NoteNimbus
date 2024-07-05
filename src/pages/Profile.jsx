@@ -1,13 +1,30 @@
+/* eslint-disable react/no-unescaped-entities */
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import api from "@/services/api.service";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function ProfilePage() {
   const { loggedInUser } = useContext(AuthContext);
-  console.log(loggedInUser);
+  const userId = loggedInUser.userId;
+  const [userDetails, setUserDetails] = useState(null);
+  
+  async function getUserDetails () {
+    try {
+        const response = await api.get(`/users/${userId}`);
+        setUserDetails(response.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getUserDetails();
+  }, [userDetails])
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -19,20 +36,21 @@ function ProfilePage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center space-y-4">
-            <img
-              className="h-24 w-24 rounded-full object-cover"
-              src={loggedInUser.username[0].toUpperCase()} 
-              alt="User Avatar"
-            />
-            <h2 className="text-xl font-semibold">{loggedInUser.firstName} {loggedInUser.lastName}</h2>
-            <p className="text-sm text-gray-600">@{loggedInUser.username}</p>
+          <Avatar className="h-20 w-20">
+              <AvatarImage src={userDetails?.imgUrl} />
+              <AvatarFallback>
+                {userDetails?.username[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <h2 className="text-xl font-semibold">{userDetails?.firstName} {userDetails?.lastName}</h2>
+            <p className="text-sm text-gray-600">{userDetails?.username}@gmail.com</p>
             <div className="flex space-x-2">
               <Button className="flex-1">Edit Profile</Button>
               <Button className="flex-1">Change Password</Button>
             </div>
-            <div className="w-full mt-4 p-4 bg-gray-100 rounded-lg">
+            <div className="w-full mt-4 p-4 bg-gray-400 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Bio</h3>
-              <p className="text-sm text-gray-600">{loggedInUser.bio}</p>
+              <p className="text-sm text-gray-600">👋 Hello! I'm a demo user exploring this awesome app. Tech enthusiast, learner, and always curious about new things.</p>
             </div>
           </div>
         </CardContent>
