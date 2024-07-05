@@ -53,14 +53,12 @@ function Header() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link>Profile</Link>
+              <Link to={"/profile"}>Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {loggedInUser && (
               <DropdownMenuItem onClick={() => logout()}>
                 Logout
               </DropdownMenuItem>
-            )}
           </DropdownMenuContent>
         </DropdownMenu>
         <ModeToggle />

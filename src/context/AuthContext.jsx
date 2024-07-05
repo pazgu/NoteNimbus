@@ -12,7 +12,7 @@ const AuthProvider = ({ children }) => {
     if (token) {
       const user = formatJWTTokenToUser(token);
       if (user !== null) {
-        setLoggedInUser({ ...user, token });
+        setLoggedInUser({token });
       }
     }
   }, []);
