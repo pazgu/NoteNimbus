@@ -23,7 +23,6 @@ import { Toaster } from "@/components/ui/toaster";
 function LoginPage() {
   const [formData, setFormData] = useState({ username: "", password: ""});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const { toast } = useToast();
@@ -38,7 +37,6 @@ function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
     try {
       setLoading(true);
       const response = await api.post("auth/login", formData);
@@ -49,29 +47,18 @@ function LoginPage() {
         login({ ...user, token });
         navigate('/notes');
       } else {
-        setError('Invalid token received');
-        toast({
-          title: "An error occurred!",
-          description: "Please try login again.",
-          appearance: 'error',
-        });
+        throw new Error('Invalid token received');
       } 
     } catch (error) {
-      console.log("Error during login:", error);
+      console.error("Error during login:", error.message);
+      let errorMessage = "An error occurred during login. Please try again.";
       if (error.response && error.response.status === 401) {
-        setError('Authentication failed. Please check your username and password.');
-        toast({
-          title: "An error occurred!",
-          description: "Please try login again.",
-          appearance: 'error',
-        });
-      } else {
-        setError('An error occurred during login. Please try again.');
+        errorMessage = "Authentication failed. Please check your username and password.";
       }
       toast({
-        title: "An error occurred!",
-        description: "Please try login again.",
-        appearance: 'error',
+        variant: "destructive",
+        title: "Authentication failed.",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
