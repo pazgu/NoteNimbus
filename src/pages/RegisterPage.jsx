@@ -14,11 +14,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
 import api from "@/services/api.service";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { Toast } from "@/components/ui/toast";
 
 function RegisterPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(""); 
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -29,7 +32,8 @@ function RegisterPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
+    let errorMessage = null;
+    let passwordMatch = true; //used flag to avoid sending a request if password do not match
     try {
       setLoading(true);
       const newUser = {
@@ -39,14 +43,25 @@ function RegisterPage() {
         firstName: formData.firstName,
         lastName: formData.lastName,
       };
+      if (formData.password !== formData.confirmPassword) {
+        passwordMatch = false;
+        throw new Error(errorMessage);
+      }
       await api.post(`auth/register`, newUser);
       navigate('/auth/login')
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        setError("User already exists. Please choose a different username.");
+        errorMessage = "User already exists. Please choose a different username.";
+      } else if (passwordMatch === false) {
+        errorMessage = "Password do not match. Please try again."
       } else {
-        setError("An error occurred during registration. Please try again.");
+        errorMessage = "An error occurred during registration. Please try again.";
       }
+      toast({
+        variant: "destructive",
+        title: "Authentication failed.",
+        description: errorMessage,
+      });
     } finally {
       setLoading(false);
     }
@@ -111,6 +126,7 @@ function RegisterPage() {
           </div>
           <Button>Register</Button>
         </form>
+        <Toaster/>
       </CardContent>
       <CardFooter>
         <p className="text-xs">
