@@ -17,6 +17,8 @@ import { formatJWTTokenToUser } from "@/utils/utils";
 import { useContext, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import api from "@/services/api.service";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 function LoginPage() {
   const [formData, setFormData] = useState({ username: "", password: ""});
@@ -24,6 +26,7 @@ function LoginPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+  const { toast } = useToast();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -44,17 +47,32 @@ function LoginPage() {
       const user = formatJWTTokenToUser(token);
       if (user) {
         login({ ...user, token });
+        navigate('/notes');
       } else {
         setError('Invalid token received');
-      }
-      navigate('/notes'); 
+        toast({
+          title: "An error occurred!",
+          description: "Please try login again.",
+          appearance: 'error',
+        });
+      } 
     } catch (error) {
       console.log("Error during login:", error);
       if (error.response && error.response.status === 401) {
         setError('Authentication failed. Please check your username and password.');
+        toast({
+          title: "An error occurred!",
+          description: "Please try login again.",
+          appearance: 'error',
+        });
       } else {
         setError('An error occurred during login. Please try again.');
       }
+      toast({
+        title: "An error occurred!",
+        description: "Please try login again.",
+        appearance: 'error',
+      });
     } finally {
       setLoading(false);
     }
@@ -80,6 +98,7 @@ function LoginPage() {
 
           <Button className="w-full">Login</Button>
         </form>
+        <Toaster />
       </CardContent>
       <CardFooter>
         <p className="text-xs">
