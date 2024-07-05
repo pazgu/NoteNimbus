@@ -61,7 +61,7 @@ function RegisterPage() {
   };
 
   return (
-    <Card className="shadow-2xl min-w-96">
+    <Card className="shadow-2xl min-w-96 mt-16">
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <span>Register</span> <LogIn />
@@ -86,7 +86,7 @@ function RegisterPage() {
               onChange={handleChange}/>
           </div>
           <div>
-            <Label>Password:</Label>
+            <Label>Confirm password:</Label>
             <Input type="password" 
               placeholder="Enter password again..." 
               name="confirmPassword"

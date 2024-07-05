@@ -11,7 +11,7 @@ const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       const user = formatJWTTokenToUser(token);
-      if (user) {
+      if (user !== null) {
         setLoggedInUser({ ...user, token });
       }
     }

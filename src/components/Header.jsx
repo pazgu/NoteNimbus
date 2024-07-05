@@ -29,7 +29,7 @@ function Header() {
       <nav>
         <ul className="flex gap-4">
           <li>
-            <Link to="/task">Notes</Link>
+            <Link to="/notes">Notes</Link>
           </li>
           <li>
             <Link to="/contact">Contact</Link>
