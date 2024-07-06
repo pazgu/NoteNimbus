@@ -29,7 +29,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
             <Route path="contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-            <Route path="notes" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
+            <Route path="notes/:userId" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
             <Route path="profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           </Route>
           <Route path="/auth" element={<AuthLayout />}>

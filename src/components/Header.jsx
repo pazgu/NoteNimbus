@@ -18,19 +18,19 @@ import {
 function Header() {
   // const loggedInUser = {username: "baba", id: "123345dsfasd"}
   const { loggedInUser, logout } = useContext(AuthContext);
-  
+
   return (
     <header className="bg-white/5 px-4 flex justify-between items-center h-14">
     <div className="flex items-center gap-2">
       <Link className="text-primary font-bold text-xl flex items-center" to="/">
-        <img className="h-8 w-8 mr-2 rounded-lg" src="src\assets\logo.jpeg" alt="Logo" />
+        <img className="h-8 w-8 mr-2 rounded-lg" src="src/assets/logo.jpeg" alt="Logo" />
         NoteNimbus
       </Link>
     </div>
       <nav>
         <ul className="flex gap-4">
           <li>
-            <Link to="/notes">Notes</Link>
+            <Link to="/notes/userId">Notes</Link>
           </li>
           <li>
             <Link to="/contact">Contact</Link>
@@ -42,7 +42,7 @@ function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar className="h-8 w-8">
-              {/* <AvatarImage src={loggedInUser?.imgUrl} /> */}
+              <AvatarImage src={loggedInUser?.imgUrl} />
               <AvatarFallback>
                 {/* {loggedInUser?.username[0].toUpperCase()} */}
               </AvatarFallback>

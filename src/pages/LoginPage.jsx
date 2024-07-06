@@ -45,7 +45,7 @@ function LoginPage() {
       const user = formatJWTTokenToUser(token);
       if (user) {
         login({ ...user, token });
-        navigate('/notes');
+        navigate(`/notes/${user.userId}`);
       } else {
         throw new Error('Invalid token received');
       } 

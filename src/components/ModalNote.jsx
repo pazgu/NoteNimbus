@@ -2,7 +2,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 
-function ModalAddTodo() {
+function ModalNote() {
     const navigate = useNavigate();
 
     const handleClose = () => {
@@ -35,4 +35,4 @@ function ModalAddTodo() {
     );
   }
   
-export default ModalAddTodo
+export default ModalNote

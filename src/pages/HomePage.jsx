@@ -1,28 +1,97 @@
+import Note from "@/components/Note";
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/context/AuthContext";
-import api from "@/services/api.service";
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "/home";
-
 function HomePage() {
-  const [dummyNotes, setDummyNotes] = useState([]);
   const navigate = useNavigate();
   const {loggedInUser} = useContext(AuthContext);
-
-  async function generateDummyNotes() {
-    try {
-      const response = await api.get(BASE_URL); 
-      setDummyNotes(response.data);
-    } catch (error) {
-      console.error("Error fetching dummy notes:", error);
-    }
-  }
-
-  useEffect(() => {
-    generateDummyNotes();
-  }, []);
+  const dummyNotes = [
+    {
+      title: "Complete Project Proposal",
+      description: "Finalize and submit the project proposal document.",
+      body: "Ensure all sections are complete, review feedback, and submit.",
+      todoList: [
+        { title: "Write executive summary", isComplete: false },
+        { title: "Compile budget estimates", isComplete: true },
+        { title: "Review with team", isComplete: false },
+        { title: "Submit proposal", isComplete: false },
+      ],
+      isPinned: true,
+    },
+    {
+      title: "Grocery Shopping",
+      description: "Buy groceries for the week.",
+      body: "Make sure to buy all the essentials and check for discounts.",
+      todoList: [
+        { title: "Buy milk", isComplete: true },
+        { title: "Buy eggs", isComplete: false },
+        { title: "Buy bread", isComplete: true },
+        { title: "Buy vegetables", isComplete: false },
+      ],
+      isPinned: false,
+    },
+    {
+      title: "Team Meeting",
+      description: "Discuss project progress and next steps.",
+      body: "Prepare slides and notes for the meeting.",
+      todoList: [
+        { title: "Prepare slides", isComplete: true },
+        { title: "Review project milestones", isComplete: true },
+        { title: "Outline next steps", isComplete: false },
+        { title: "Send meeting invite", isComplete: true },
+      ],
+      isPinned: true,
+    },
+    {
+      title: "Doctor's Appointment",
+      description: "Routine check-up with Dr. Smith.",
+      body: "Bring medical records and list of medications.",
+      todoList: [
+        { title: "Bring insurance card", isComplete: false },
+        { title: "Prepare questions for doctor", isComplete: true },
+        { title: "Confirm appointment time", isComplete: true },
+        { title: "Bring previous test results", isComplete: false },
+      ],
+      isPinned: false,
+    },
+    {
+      title: "Finish Reading Book",
+      description: "Complete the last chapter of 'Atomic Habits'.",
+      body: "Summarize key takeaways and apply to daily routine.",
+      todoList: [
+        { title: "Read chapter 10", isComplete: false },
+        { title: "Summarize key points", isComplete: false },
+        { title: "Apply concepts to daily routine", isComplete: false },
+      ],
+      isPinned: true,
+    },
+    {
+      title: "Update Resume",
+      description: "Add recent job experience and skills.",
+      body: "Highlight key achievements and update contact information.",
+      todoList: [
+        { title: "Add new job position", isComplete: true },
+        { title: "Update skills section", isComplete: false },
+        { title: "Review for typos", isComplete: false },
+        { title: "Export to PDF", isComplete: false },
+      ],
+      isPinned: false,
+    },
+    {
+      title: "Plan Weekend Trip",
+      description: "Organize a weekend trip to the mountains.",
+      body: "Book accommodation and plan activities.",
+      todoList: [
+        { title: "Book cabin", isComplete: true },
+        { title: "Pack hiking gear", isComplete: false },
+        { title: "Plan itinerary", isComplete: true },
+        { title: "Check weather forecast", isComplete: false },
+      ],
+      isPinned: false,
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -39,30 +108,11 @@ function HomePage() {
       </div> }
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 mt-3">
         {dummyNotes.map((note) => (
-          <div key={note._id} className="p-4 rounded shadow-md bg-white dark:bg-gray-800 dark:border dark:border-gray-700">
-            <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">{note.title}</h2>
-            <p className="text-gray-700 dark:text-gray-300">{note.description}</p>
-            <p className="text-gray-700 dark:text-gray-300">{note.body}</p>
-            {note.todoList && note.todoList.length > 0 && (
-              <ul className="mt-2">
-                {note.todoList.map((todo, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={todo.isComplete}
-                      className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                      readOnly
-                    />
-                    <label className="text-gray-700 dark:text-gray-300">{todo.title}</label>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+         <Note key={note.title} note={note}/>
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 
