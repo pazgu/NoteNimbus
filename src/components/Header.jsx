@@ -5,6 +5,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import logo from "../assets/logo.jpeg";
 
 import {
   DropdownMenu,
@@ -23,7 +24,7 @@ function Header() {
     <header className="bg-white/5 px-4 flex justify-between items-center h-14">
     <div className="flex items-center gap-2">
       <Link className="text-primary font-bold text-xl flex items-center" to="/">
-        <img className="h-8 w-8 mr-2 rounded-lg" src="src/assets/logo.jpeg" alt="Logo" />
+        <img className="h-8 w-8 mr-2 rounded-lg" src={logo} alt="Logo" />
         NoteNimbus
       </Link>
     </div>

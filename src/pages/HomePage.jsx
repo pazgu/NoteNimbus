@@ -9,18 +9,6 @@ function HomePage() {
   const {loggedInUser} = useContext(AuthContext);
   const dummyNotes = [
     {
-      title: "Complete Project Proposal",
-      description: "Finalize and submit the project proposal document.",
-      body: "Ensure all sections are complete, review feedback, and submit.",
-      todoList: [
-        { title: "Write executive summary", isComplete: false },
-        { title: "Compile budget estimates", isComplete: true },
-        { title: "Review with team", isComplete: false },
-        { title: "Submit proposal", isComplete: false },
-      ],
-      isPinned: true,
-    },
-    {
       title: "Grocery Shopping",
       description: "Buy groceries for the week.",
       body: "Make sure to buy all the essentials and check for discounts.",

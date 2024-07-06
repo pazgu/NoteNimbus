@@ -9,7 +9,6 @@ import Note from "@/components/Note";
 function NotesPage() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const { loggedInUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -21,12 +20,12 @@ function NotesPage() {
       } catch (error) {
         if (error.response) {
           if (error.response.status === 404) {
-            setError("User has no notes or user not found.");
+            console.error("User has no notes or user not found.");
           } else {
-            setError("Server error while fetching notes.");
+            console.error("Server error while fetching notes.");
           }
         } else {
-          setError("An error occurred. Please try again.");
+          console.error("An error occurred. Please try again.");
         }
       } finally {
         setLoading(false);
@@ -41,36 +40,29 @@ function NotesPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+      <div className="loader"></div>
       </div>
     );
   }
 
-  // if (error) {
-  //   return (
-  //     <div className="flex flex-col items-center justify-center min-h-[60vh]">
-  //       <p className="text-lg">{error}</p>
-  //       <Button onClick={() => navigate("/notes/create")} className="mt-4">Add a Note</Button>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">My Notes</h1>
+      <h1 className="text-3xl font-bold mb-2 text-center">My Notes</h1>
       {notes.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
-          <p className="text-lg">You don't have any notes yet.</p>
-          <Button onClick={() => navigate("/notes/create")} className="mt-4">Add a Note</Button>
+          <p className="text-lg mb-4">You don't have any notes yet.</p>
+          <Button onClick={() => navigate("/notes/create")} className="px-8 py-3 text-lg">Add a Note</Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {notes?.map((note) => (
-            <Note key={note._id} note={note}/>
-          ))}
-          <Button onClick={() => navigate("/notes/create")} className="mt-4">Add a Note</Button>
+        <div className="container mx-auto p-4">
+          <div className="mb-4 flex justify-center">
+            <Button onClick={() => navigate("/notes/create")} className="px-8 py-3 text-lg">Add a Note</Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {notes.map((note) => (
+              <Note key={note._id} note={note} />
+            ))}
+          </div>
         </div>
       )}
     </div>
