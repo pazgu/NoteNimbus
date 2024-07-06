@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext} from "react";
 import { AuthContext } from "../context/AuthContext";
 import api from "../services/api.service";
 import { Button } from "@/components/ui/button";
@@ -40,21 +40,6 @@ function NotesPage() {
     }
   }, [loggedInUser]);
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'Title',
-        accessor: 'title',
-      },
-      {
-        Header: 'Description',
-        accessor: 'description',
-      },
-      // Add more columns as needed
-    ],
-    []
-  );
-
   const toggleDisplay = () => {
     setDisplayTable(prev => !prev);
   };
@@ -69,15 +54,15 @@ function NotesPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">My Notes</h1>
-      <div className="mb-4 flex justify-end">
-        <Button onClick={() => navigate('/notes/create')} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none">
-          Add a Note
-        </Button>
-      </div>
+      <h1 className="text-3xl font-bold mb-4 text-center">My Notes</h1>
       <div className="mb-4 flex justify-center">
         <Button onClick={toggleDisplay} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none">
           {displayTable ? 'Show as Cards' : 'Show as Table'}
+        </Button>
+      </div>
+      <div className="mb-4 flex justify-start">
+        <Button onClick={() => navigate('/notes/create')} className="bg-blue-500 hover:bg-blue-700 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none">
+          Add a Note
         </Button>
       </div>
       {notes.length === 0 ? (
