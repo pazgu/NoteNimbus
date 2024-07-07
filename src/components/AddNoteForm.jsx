@@ -13,6 +13,8 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { useToast } from "./ui/use-toast";
+import { Toaster } from "./ui/toaster";
 
 function AddNoteForm() {
   const [newNoteTitle, setNewNoteTitle] = useState("");
@@ -22,6 +24,7 @@ function AddNoteForm() {
   const [loading, setLoading] = useState(false);
   const navigateBack = useNavigate();
   const { loggedInUser } = useContext(AuthContext);
+  const { toast } = useToast();
 
   function goBack() {
     navigateBack(-1);
@@ -45,11 +48,6 @@ function AddNoteForm() {
 
   async function createNewNote(ev) {
     ev.preventDefault();
-    if (loggedInUser === null) {
-      alert("You must be logged in to add notes.");
-      return;
-    }
-
     try {
       const newNote = {
         title: newNoteTitle,
@@ -65,7 +63,14 @@ function AddNoteForm() {
       setNewNoteDescription("");
       setNewNoteBody("");
       setNewTodoList([{ title: "", isComplete: false }]);
-      goBack();
+      toast({
+        title: "Note added",
+        description: "Your new note has been successfully added.",
+        status: "success",
+      });
+      setTimeout(() => {
+        navigateBack(`/notes/${loggedInUser.userId}`); 
+      }, 1000);
     } catch (error) {
       console.error("Error creating note:", error);
     } finally {
@@ -86,7 +91,7 @@ function AddNoteForm() {
         <CardContent>
           <form onSubmit={createNewNote} className="space-y-4">
             <div>
-              <Label htmlFor="title">Note Title</Label>
+              <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
                 type="text"
@@ -149,34 +154,16 @@ function AddNoteForm() {
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
-                <svg
-                  className="animate-spin h-5 w-5 mr-3 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V2.5"
-                  ></path>
-                </svg>
+               <div className="loader"></div>
               ) : (
                 "Add Note"
               )}
             </Button>
           </form>
+          <Toaster/>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Button onClick={goBack} className="bg-gray-500 hover:bg-gray-700 text-white">
+          <Button onClick={goBack} className="bg-gray-500 hover:bg-gray-700 text-white w-full ">
             Back
           </Button>
         </CardFooter>

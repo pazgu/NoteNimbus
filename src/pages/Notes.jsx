@@ -3,7 +3,7 @@ import { useEffect, useState, useContext} from "react";
 import { AuthContext } from "../context/AuthContext";
 import api from "../services/api.service";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Note from "@/components/Note";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -106,7 +106,9 @@ function NotesPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {notes.map(note => (
-                <Note key={note._id} note={note} />
+                <Link key={note._id} to={`/notes/${loggedInUser.userId}/${note._id}`}>
+                <Note note={note}/>
+                </Link>
               ))}
             </div>
           )}

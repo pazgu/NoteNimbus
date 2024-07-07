@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 
 function Note({note}) {
+
   return (
-    <div key={note._id} className="p-4 rounded shadow-md bg-white dark:bg-gray-800 dark:border dark:border-gray-700">
+    <div key={note._id} className="p-4 rounded shadow-md bg-white dark:bg-gray-800 dark:border dark:border-gray-700 h-full">
     <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">{note.title}</h2>
     <p className="text-gray-700 dark:text-gray-300">{note.description}</p>
     <p className="text-gray-700 dark:text-gray-300">{note.body}</p>
