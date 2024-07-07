@@ -7,6 +7,8 @@ import api from "@/services/api.service";
 import Note from "@/components/Note";
 import { AuthContext } from "@/context/AuthContext";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from "@/components/ui/alert-dialog";
+import { Toaster } from "@/components/ui/toaster";
+import { toast } from "@/components/ui/use-toast";
 
 function NoteDetails() {
   const { id } = useParams();
@@ -53,6 +55,11 @@ function NoteDetails() {
       await api.put(`notes/${loggedInUser.userId}/${id}`, editedNote);
       setNote(editedNote);
       setEditMode(false);
+      toast({
+        title: "Note edited",
+        description: "Your note has been successfully edited.",
+        status: "success",
+      });
     } catch (error) {
       setError(error);
     }
@@ -261,6 +268,7 @@ function NoteDetails() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Toaster/>
     </>
   );
 }
