@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import {useParams } from "react-router-dom";
+import {useNavigate, useParams } from "react-router-dom";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
@@ -12,8 +12,8 @@ function NoteDetails(){
   const { loggedInUser } = useContext(AuthContext); 
   const [note, setNote] = useState(null); 
   const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
-
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     async function getNoteById() {
@@ -32,6 +32,19 @@ function NoteDetails(){
         getNoteById();
     }
   }, [id, loggedInUser]); 
+
+  async function handleDelete(){
+    if (!window.confirm("Are you sure you want to delete this note?")) {
+      return;
+    }
+    try {
+      await api.delete(`notes/${loggedInUser.userId}/${id}`);
+      // Redirect to a different page after successful delete, e.g., home page
+      navigate(-1);
+    } catch (error) {
+      setError(error);
+    }
+  }
 
 
   if (loading) {
@@ -77,6 +90,7 @@ function NoteDetails(){
             )}
         </div>
         <DialogFooter>
+        <button onClick={handleDelete} className="mt-4 px-4 py-2 bg-red-600 text-white rounded">Delete Note</button>
             <DialogClose asChild>
             <button className="mt-4 px-4 py-2 bg-red-600 text-white rounded">Close</button>
             </DialogClose>
