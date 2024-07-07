@@ -38,18 +38,13 @@ function AddNoteForm() {
     setNewTodoList([...newTodoList, { title: "", isComplete: false }]);
   }
 
+  function removeTodo(index) {
+    const updatedTodos = newTodoList.filter((_, i) => i !== index);
+    setNewTodoList(updatedTodos);
+  }
+
   async function createNewNote(ev) {
     ev.preventDefault();
-    if (
-      newNoteTitle.trim() === "" ||
-      newNoteDescription.trim() === "" ||
-      newNoteBody.trim() === "" ||
-      newTodoList.some(todo => todo.title.trim() === "")
-    ) {
-      alert("Please fill out all fields correctly.");
-      return;
-    }
-
     if (loggedInUser === null) {
       alert("You must be logged in to add notes.");
       return;
@@ -126,7 +121,7 @@ function AddNoteForm() {
             <div>
               <Label>Todo List</Label>
               {newTodoList.map((todo, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={index} className="flex items-center space-x-1 space-y-2">
                   <Input
                     type="text"
                     placeholder="Todo title..."
@@ -139,6 +134,13 @@ function AddNoteForm() {
                     checked={todo.isComplete}
                     onChange={(ev) => handleTodoChange(index, "isComplete", ev.target.checked)}
                   />
+                  <Button
+                    type="button"
+                    onClick={() => removeTodo(index)}
+                    className="bg-red-500 hover:bg-red-700 text-white"
+                  >
+                    Remove
+                  </Button>
                 </div>
               ))}
               <Button type="button" onClick={addTodo} className="mt-2">
