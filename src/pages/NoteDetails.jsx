@@ -6,6 +6,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import api from "@/services/api.service";
 import Note from "@/components/Note";
 import { AuthContext } from "@/context/AuthContext";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from "@/components/ui/alert-dialog";
 
 function NoteDetails() {
   const { id } = useParams();
@@ -16,6 +17,7 @@ function NoteDetails() {
   const [editMode, setEditMode] = useState(false);
   const [editedNote, setEditedNote] = useState(null);
   const [newTodo, setNewTodo] = useState("");
+  const [isOpen, setIsOpen] = useState(false); //to alert confirm
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +60,9 @@ function NoteDetails() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (type === "checkbox") {
+    if (name === "newTodo") {
+      setNewTodo(value); // Update the newTodo state directly
+    } else if (type === "checkbox") {
       const updatedTodoList = editedNote.todoList.map((todo, index) => {
         if (index.toString() === name) {
           return { ...todo, isComplete: checked };
@@ -71,32 +75,37 @@ function NoteDetails() {
     }
   };
 
+  const handleAddTodo = () => {
+    if (newTodo.trim() === "") return;
+    const newTodoItem = { title: newTodo, isComplete: false };
+    const updatedTodoList = [...editedNote.todoList, newTodoItem];
+    setEditedNote({ ...editedNote, todoList: updatedTodoList });
+    setNewTodo("");
+  };
+
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this note?")) {
-      return;
-    }
     try {
-      await api.delete(`notes/${loggedInUser.userId}/${id}`);
-      navigate(-1);
+      setIsOpen(true);
     } catch (error) {
       setError(error);
     }
   };
 
-  const handleAddTodo = async () => {
-    if (newTodo.trim() === "") return;
+  const handleConfirmDelete = async () => {
     try {
-      const response = await api.post(`notes/${loggedInUser.userId}/${editedNote._id}/todos`, {
-        title: newTodo,
-        isComplete: false
-      });
-      const updatedTodoList = [...editedNote.todoList, response.data];
-      setEditedNote({ ...editedNote, todoList: updatedTodoList });
-      setNewTodo("");
+      setIsOpen(false);
+      await api.delete(`notes/${loggedInUser.userId}/${id}`);
+      navigate(-1);
     } catch (error) {
       setError(error);
+      setIsOpen(false);
     }
   };
+
+  const handleCancelDelete = () => {
+    setIsOpen(false);
+  };
+
 
   if (loading) {
     return <div className="loader"></div>;
@@ -112,19 +121,39 @@ function NoteDetails() {
 
   return (
     <>
-       <div className="flex justify-center items-center h-full">
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+             <AlertDialogDescription id="alert-dialog-description">
+              This action cannot be undone. This will permanently delete your note
+              and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel as="button" onClick={handleCancelDelete}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction as="button" className="ml-2 px-4 py-2 bg-red-600 text-white rounded" onClick={handleConfirmDelete}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <div className="flex justify-center items-center h-full">
         <div className="max-w-3xl w-full p-4">
-            <Note note={note} />
+          <Note note={note} />
         </div>
       </div>
       <Dialog>
         <div className="flex justify-center">
-            <DialogTrigger asChild>
-                <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded" onClick={handleEdit}>
-                {editMode ? 'Edit Note' : 'Open Details'}
-                </button>
-            </DialogTrigger>
+          <DialogTrigger asChild>
+            <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded" onClick={handleEdit}>
+              {editMode ? 'Edit Note' : 'Open Details'}
+            </button>
+          </DialogTrigger>
         </div>
+        <DialogTitle></DialogTitle>
         <DialogContent>
           <DialogHeader>
             {editMode ? (
@@ -144,71 +173,71 @@ function NoteDetails() {
           </DialogHeader>
           <div>
             {editMode ? (
-                <input
+              <input
                 type="text"
                 name="description"
                 value={editedNote.description}
                 onChange={handleChange}
                 className="mt-2 px-4 py-2 w-full border border-gray-700 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-300"
-                />
+              />
             ) : (
-                <p>{note.body}</p>
+              <p>{note.body}</p>
             )}
             {editMode ? (
-                <textarea
+              <textarea
                 name="body"
                 value={editedNote.body}
                 onChange={handleChange}
                 className="mt-2 px-4 py-2 w-full h-32 border border-gray-700 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-300"
-                />
+              />
             ) : (
-                <ul className="mt-2">
+              <ul className="mt-2">
                 {note.todoList.map((todo, index) => (
-                    <li key={index} className="flex items-center gap-2">
+                  <li key={index} className="flex items-center gap-2">
                     <input
-                        type="checkbox"
-                        name={index.toString()}
-                        checked={todo.isComplete}
-                        readOnly
-                        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                      type="checkbox"
+                      name={index.toString()}
+                      checked={todo.isComplete}
+                      readOnly
+                      className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
                     />
                     <label className="text-gray-700 dark:text-gray-300">{todo.title}</label>
-                    </li>
+                  </li>
                 ))}
-                </ul>
+              </ul>
             )}
             {editMode && editedNote.todoList && editedNote.todoList.length > 0 && (
-                <ul className="mt-2">
+              <ul className="mt-2">
                 {editedNote.todoList.map((todo, index) => (
-                    <li key={index} className="flex items-center gap-2">
+                  <li key={index} className="flex items-center gap-2">
                     <input
-                        type="checkbox"
-                        name={index.toString()}
-                        checked={todo.isComplete}
-                        onChange={handleChange}
-                        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                      type="checkbox"
+                      name={index.toString()}
+                      checked={todo.isComplete}
+                      onChange={handleChange}
+                      className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
                     />
                     <label className="text-gray-700 dark:text-gray-300">{todo.title}</label>
-                    </li>
+                  </li>
                 ))}
-                </ul>
+              </ul>
             )}
             {editMode && (
-                <div className="mt-4">
+              <div className="mt-4 flex flex-row">
                 <input
-                    type="text"
-                    name="newTodo"
-                    value={newTodo}
-                    onChange={handleChange}
-                    placeholder="Enter new todo..."
-                    className="px-4 py-2 w-full border border-gray-700 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-300"
+                  type="text"
+                  name="newTodo"
+                  value={newTodo}
+                  onChange={handleChange}
+                  placeholder="Enter new todo..."
+                  className="px-4 py-2 w-full border border-gray-700 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-300"
                 />
                 <button onClick={handleAddTodo} className="ml-2 px-4 py-2 bg-green-600 text-white rounded">
-                    Add Todo
+                  +
                 </button>
-                </div>
+              </div>
             )}
-            </div>
+          </div>
           <DialogFooter>
             {editMode ? (
               <>
@@ -223,10 +252,11 @@ function NoteDetails() {
                 </button>
               </>
             ) : (
-                <DialogClose asChild>
-                    <button className="mt-4 px-4 py-2 bg-red-600 text-white rounded">Close</button>
-                </DialogClose>
+              <DialogClose asChild>
+                <button className="mt-4 px-4 py-2 bg-red-600 text-white rounded">Close</button>
+              </DialogClose>
             )}
+         
 
           </DialogFooter>
         </DialogContent>
