@@ -12,6 +12,7 @@ import { useContext } from "react";
 import Contact from "./pages/Contact";
 import { ToastProvider } from "./components/ui/toast";
 import Profile from "./pages/Profile";
+import CreateNewNote from "./pages/CreateNewNote";
 
 function ProtectedRoute({ children }) {
   const {loggedInUser} = useContext(AuthContext)
@@ -31,6 +32,7 @@ function App() {
             <Route path="contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
             <Route path="notes/:userId" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
             <Route path="profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="notes/create" element={<ProtectedRoute><CreateNewNote /></ProtectedRoute>} />
           </Route>
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<LoginPage />} />

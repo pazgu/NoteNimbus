@@ -16,7 +16,7 @@ function NotesPage() {
   
 
   useEffect(() => {
-    const fetchNotes = async () => {
+    async function fetchNotes () {
       try {
         const response = await api.get(`/notes/${loggedInUser.userId}`);
         setNotes(response.data.notes);
@@ -33,16 +33,16 @@ function NotesPage() {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     if (loggedInUser) {
       fetchNotes();
     }
   }, [loggedInUser]);
 
-  const toggleDisplay = () => {
+  function toggleDisplay() {
     setDisplayTable(prev => !prev);
-  };
+  }
 
   if (loading) {
     return (
