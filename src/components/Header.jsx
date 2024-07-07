@@ -21,7 +21,7 @@ function Header() {
   const { loggedInUser, logout } = useContext(AuthContext);
 
   return (
-    <header className="bg-gray-200 dark:bg-white/5 px-4 flex justify-between items-center h-14">
+    <header className="bg-white/5 px-4 flex justify-between items-center h-14">
     <div className="flex items-center gap-2">
       <Link className="text-primary font-bold text-xl flex items-center" to="/">
         <img className="h-8 w-8 mr-2 rounded-lg" src={logo} alt="Logo" />
@@ -31,7 +31,7 @@ function Header() {
       <nav>
         <ul className="flex gap-4">
           <li>
-            <Link to="/notes/userId">Notes</Link>
+            <Link to="/notes/:userId">Notes</Link>
           </li>
           <li>
             <Link to="/contact">Contact</Link>
