@@ -23,6 +23,7 @@ function AddNoteForm() {
   const [newTodoList, setNewTodoList] = useState([
     { title: "", isComplete: false },
   ]);
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigateBack = useNavigate();
   const { loggedInUser } = useContext(AuthContext);
@@ -51,25 +52,38 @@ function AddNoteForm() {
   async function createNewNote(ev) {
     ev.preventDefault();
     try {
-      const newNote = {
-        title: newNoteTitle,
-        description: newNoteDescription,
-        body: newNoteBody,
-        todoList: newTodoList,
-        isPinned: false,
-        user: loggedInUser.userId,
-      };
+      const formData = new FormData();
+      formData.append("title", newNoteTitle);
+      formData.append("description", newNoteDescription);
+      formData.append("body", newNoteBody);
+      formData.append("user", loggedInUser.userId);
+      formData.append("isPinned", false);
+      formData.append("image", image);
+
+      newTodoList.forEach((todo, index) => {
+        formData.append(`todoList[${index}][title]`, todo.title);
+        formData.append(`todoList[${index}][isComplete]`, todo.isComplete);
+      });
+
       setLoading(true);
-      await api.post("notes/create", newNote);
+      await api.post("/notes/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       setNewNoteTitle("");
       setNewNoteDescription("");
       setNewNoteBody("");
       setNewTodoList([{ title: "", isComplete: false }]);
+      setImage(null);
+
       toast({
         title: "Note added",
         description: "Your new note has been successfully added.",
         status: "success",
       });
+
       setTimeout(() => {
         navigateBack(`/notes/${loggedInUser.userId}`);
       }, 1000);
@@ -160,6 +174,13 @@ function AddNoteForm() {
               <Button type="button" onClick={addTodo} className="mt-2">
                 Add Todo
               </Button>
+            </div>
+            <div>
+              <Label>Image</Label>
+              <Input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+              />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <div className="loader"></div> : "Add Note"}
