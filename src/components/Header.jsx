@@ -17,21 +17,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 function Header() {
-  // const loggedInUser = {username: "baba", id: "123345dsfasd"}
   const { loggedInUser, logout } = useContext(AuthContext);
-
   return (
     <header className="bg-white/5 px-4 flex justify-between items-center h-14">
-    <div className="flex items-center gap-2">
-      <Link className="text-primary font-bold text-xl flex items-center" to="/">
-        <img className="h-8 w-8 mr-2 rounded-lg" src={logo} alt="Logo" />
-        NoteNimbus
-      </Link>
-    </div>
+      <div className="flex items-center gap-2">
+        <Link
+          className="text-primary font-bold text-xl flex items-center"
+          to="/"
+        >
+          <img className="h-8 w-8 mr-2 rounded-lg" src={logo} alt="Logo" />
+          NoteNimbus
+        </Link>
+      </div>
       <nav>
         <ul className="flex gap-4">
           <li>
-            <Link to="/notes/:userId">Notes</Link>
+            <Link to={`/notes/${loggedInUser?.userId}`}>Notes</Link>
           </li>
           <li>
             <Link to="/contact">Contact</Link>
@@ -45,7 +46,9 @@ function Header() {
             <Avatar className="h-8 w-8">
               <AvatarImage src={loggedInUser?.imgUrl} />
               <AvatarFallback>
-                {/* {loggedInUser?.username[0].toUpperCase()} */}
+                {loggedInUser?.username
+                  ? loggedInUser.username[0].toUpperCase()
+                  : "P"}
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
@@ -58,9 +61,7 @@ function Header() {
               <Link to={`/profile/${loggedInUser?.userId}`}>Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => logout()}>
-                Logout
-              </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <ModeToggle />

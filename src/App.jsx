@@ -17,11 +17,9 @@ import NoteDetails from "./pages/NoteDetails";
 
 function ProtectedRoute({ children }) {
   const { loggedInUser } = useContext(AuthContext);
-
   if (loggedInUser === undefined) {
     return null;
   }
-
   if (loggedInUser === null) {
     return <Navigate to="/auth/login" />;
   }

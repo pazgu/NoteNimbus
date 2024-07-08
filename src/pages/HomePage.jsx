@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const navigate = useNavigate();
-  const {loggedInUser} = useContext(AuthContext);
+  const { loggedInUser } = useContext(AuthContext);
   const dummyNotes = [
     {
       title: "Grocery Shopping",
@@ -84,24 +84,44 @@ function HomePage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
       <header className="w-full py-12 text-center bg-white dark:bg-gray-800 shadow-md">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Welcome to My NoteNimbus App</h1>
-        <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">An intuitive app to manage your notes and tasks efficiently.</p>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">Easily create, update, and organize your tasks with a clean and simple interface.</p>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+          Welcome to My NoteNimbus App
+        </h1>
+        <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">
+          An intuitive app to manage your notes and tasks efficiently.
+        </p>
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
+          Easily create, update, and organize your tasks with a clean and simple
+          interface.
+        </p>
       </header>
-      {loggedInUser === null && 
-      <div className="mb-6 mt-6 text-center">
-        <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">Join our community of organized and efficient users. Sign up or log in to get started!</p>
-        <Button className="mr-4 text-lg py-3 px-6" onClick={() => navigate('/auth/login')}>Login</Button>
-        <Button className="text-lg py-3 px-6" onClick={() => navigate('/auth/register')}>Register</Button>
-      </div> }
+      {loggedInUser === undefined && (
+        <div className="mb-6 mt-6 text-center">
+          <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
+            Join our community of organized and efficient users. Sign up or log
+            in to get started!
+          </p>
+          <Button
+            className="mr-4 text-lg py-3 px-6"
+            onClick={() => navigate("/auth/login")}
+          >
+            Login
+          </Button>
+          <Button
+            className="text-lg py-3 px-6"
+            onClick={() => navigate("/auth/register")}
+          >
+            Register
+          </Button>
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 mt-3">
         {dummyNotes.map((note) => (
-         <Note key={note.title} note={note}/>
+          <Note key={note.title} note={note} />
         ))}
       </div>
     </div>
-  )
+  );
 }
-
 
 export default HomePage;

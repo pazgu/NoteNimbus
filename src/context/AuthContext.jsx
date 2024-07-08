@@ -14,7 +14,7 @@ const AuthProvider = ({ children }) => {
       if (user !== null) {
         return setLoggedInUser({ ...user, token });
       }
-      if (!user) {
+      if (user === undefined) {
         return setLoggedInUser(null);
       }
     }
