@@ -18,6 +18,7 @@ import NoteDetails from "./pages/NoteDetails";
 function ProtectedRoute({ children }) {
   const { loggedInUser } = useContext(AuthContext);
   if (loggedInUser === undefined) {
+    //at first mount
     return null;
   }
   if (loggedInUser === null) {

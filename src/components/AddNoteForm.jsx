@@ -20,7 +20,9 @@ function AddNoteForm() {
   const [newNoteTitle, setNewNoteTitle] = useState("");
   const [newNoteDescription, setNewNoteDescription] = useState("");
   const [newNoteBody, setNewNoteBody] = useState("");
-  const [newTodoList, setNewTodoList] = useState([{ title: "", isComplete: false }]);
+  const [newTodoList, setNewTodoList] = useState([
+    { title: "", isComplete: false },
+  ]);
   const [loading, setLoading] = useState(false);
   const navigateBack = useNavigate();
   const { loggedInUser } = useContext(AuthContext);
@@ -31,7 +33,7 @@ function AddNoteForm() {
   }
 
   function handleTodoChange(index, field, value) {
-    const updatedTodoList = newTodoList.map((todo, i) => 
+    const updatedTodoList = newTodoList.map((todo, i) =>
       i === index ? { ...todo, [field]: value } : todo
     );
     setNewTodoList(updatedTodoList);
@@ -69,7 +71,7 @@ function AddNoteForm() {
         status: "success",
       });
       setTimeout(() => {
-        navigateBack(`/notes/${loggedInUser.userId}`); 
+        navigateBack(`/notes/${loggedInUser.userId}`);
       }, 1000);
     } catch (error) {
       console.error("Error creating note:", error);
@@ -126,25 +128,32 @@ function AddNoteForm() {
             <div>
               <Label>Todo List</Label>
               {newTodoList.map((todo, index) => (
-                <div key={index} className="flex items-center space-x-1 space-y-2">
+                <div
+                  key={index}
+                  className="flex items-center space-x-1 space-y-2"
+                >
                   <Input
                     type="text"
                     placeholder="Todo title..."
                     value={todo.title}
-                    onChange={(ev) => handleTodoChange(index, "title", ev.target.value)}
+                    onChange={(ev) =>
+                      handleTodoChange(index, "title", ev.target.value)
+                    }
                     required
                   />
                   <Input
                     type="checkbox"
                     checked={todo.isComplete}
-                    onChange={(ev) => handleTodoChange(index, "isComplete", ev.target.checked)}
+                    onChange={(ev) =>
+                      handleTodoChange(index, "isComplete", ev.target.checked)
+                    }
                   />
                   <Button
                     type="button"
                     onClick={() => removeTodo(index)}
                     className="bg-red-500 hover:bg-red-700 text-white"
                   >
-                    Remove
+                    X
                   </Button>
                 </div>
               ))}
@@ -153,17 +162,16 @@ function AddNoteForm() {
               </Button>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
-               <div className="loader"></div>
-              ) : (
-                "Add Note"
-              )}
+              {loading ? <div className="loader"></div> : "Add Note"}
             </Button>
           </form>
-          <Toaster/>
+          <Toaster />
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Button onClick={goBack} className="bg-gray-500 hover:bg-gray-700 text-white w-full ">
+          <Button
+            onClick={goBack}
+            className="bg-gray-500 hover:bg-gray-700 text-white w-full "
+          >
             Back
           </Button>
         </CardFooter>

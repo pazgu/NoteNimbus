@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Pin, PinOff } from "lucide-react";
 
 function NotesPage() {
   const [notes, setNotes] = useState([]);
@@ -22,7 +23,6 @@ function NotesPage() {
 
   useEffect(() => {
     async function fetchNotes() {
-      console.log(loggedInUser);
       if (!loggedInUser.userId) return;
       try {
         const response = await api.get(`/notes/${loggedInUser.userId}`);
@@ -41,7 +41,6 @@ function NotesPage() {
         setLoading(false);
       }
     }
-
     if (loggedInUser) {
       fetchNotes();
     }
@@ -51,6 +50,22 @@ function NotesPage() {
     setDisplayTable((prev) => !prev);
   }
 
+  async function togglePin(noteId) {
+    try {
+      const noteToToggle = notes.find((note) => note._id === noteId);
+      if (!noteToToggle) return;
+      const updatedNote = { ...noteToToggle, isPinned: !noteToToggle.isPinned };
+      await api.patch(`/notes/${loggedInUser.userId}/${updatedNote._id}`, {
+        isPinned: updatedNote.isPinned,
+      });
+      setNotes((prevNotes) =>
+        prevNotes.map((note) => (note._id === noteId ? updatedNote : note))
+      );
+    } catch (error) {
+      console.error("Error toggling pin state:", error);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -58,6 +73,8 @@ function NotesPage() {
       </div>
     );
   }
+
+  const sortedNotes = [...notes].sort((a, b) => b.isPinned - a.isPinned);
 
   return (
     <div className="container mx-auto p-4">
@@ -118,12 +135,26 @@ function NotesPage() {
             </Table>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {notes.map((note) => (
+              {sortedNotes.map((note) => (
                 <Link
                   key={note._id}
                   to={`/notes/${loggedInUser.userId}/${note._id}`}
+                  className="relative"
                 >
                   <Note note={note} />
+                  <div
+                    className="absolute top-2 right-2 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      togglePin(note._id);
+                    }}
+                  >
+                    {note.isPinned ? (
+                      <Pin className="text-yellow-500" />
+                    ) : (
+                      <PinOff className="text-gray-500" />
+                    )}
+                  </div>
                 </Link>
               ))}
             </div>

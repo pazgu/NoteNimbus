@@ -2,11 +2,29 @@
 
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import api from "@/services/api.service";
 import Note from "@/components/Note";
 import { AuthContext } from "@/context/AuthContext";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
 
@@ -40,17 +58,17 @@ function NoteDetails() {
     }
   }, [id, loggedInUser]);
 
-  const handleEdit = () => {
+  function handleEdit() {
     setEditMode(true);
     setEditedNote({ ...note });
-  };
+  }
 
-  const handleCancelEdit = () => {
+  function handleCancelEdit() {
     setEditMode(false);
     setEditedNote(null);
-  };
+  }
 
-  const handleSaveChanges = async () => {
+  async function handleSaveChanges() {
     try {
       await api.put(`notes/${loggedInUser.userId}/${id}`, editedNote);
       setNote(editedNote);
@@ -63,12 +81,12 @@ function NoteDetails() {
     } catch (error) {
       setError(error);
     }
-  };
+  }
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     const { name, value, type, checked } = e.target;
     if (name === "newTodo") {
-      setNewTodo(value); // Update the newTodo state directly
+      setNewTodo(value);
     } else if (type === "checkbox") {
       const updatedTodoList = editedNote.todoList.map((todo, index) => {
         if (index.toString() === name) {
@@ -80,25 +98,25 @@ function NoteDetails() {
     } else {
       setEditedNote({ ...editedNote, [name]: value });
     }
-  };
+  }
 
-  const handleAddTodo = () => {
+  function handleAddTodo() {
     if (newTodo.trim() === "") return;
     const newTodoItem = { title: newTodo, isComplete: false };
     const updatedTodoList = [...editedNote.todoList, newTodoItem];
     setEditedNote({ ...editedNote, todoList: updatedTodoList });
     setNewTodo("");
-  };
+  }
 
-  const handleDelete = async () => {
+  function handleDelete() {
     try {
       setIsOpen(true);
     } catch (error) {
       setError(error);
     }
-  };
+  }
 
-  const handleConfirmDelete = async () => {
+  async function handleConfirmDelete() {
     try {
       setIsOpen(false);
       await api.delete(`notes/${loggedInUser.userId}/${id}`);
@@ -107,12 +125,11 @@ function NoteDetails() {
       setError(error);
       setIsOpen(false);
     }
-  };
+  }
 
-  const handleCancelDelete = () => {
+  function handleCancelDelete() {
     setIsOpen(false);
-  };
-
+  }
 
   if (loading) {
     return <div className="loader"></div>;
@@ -132,16 +149,20 @@ function NoteDetails() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-             <AlertDialogDescription id="alert-dialog-description">
-              This action cannot be undone. This will permanently delete your note
-              and remove your data from our servers.
+            <AlertDialogDescription id="alert-dialog-description">
+              This action cannot be undone. This will permanently delete your
+              note and remove your data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel as="button" onClick={handleCancelDelete}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction as="button" className="ml-2 px-4 py-2 bg-red-600 text-white rounded" onClick={handleConfirmDelete}>
+            <AlertDialogAction
+              as="button"
+              className="ml-2 px-4 py-2 bg-red-600 text-white rounded"
+              onClick={handleConfirmDelete}
+            >
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -155,8 +176,11 @@ function NoteDetails() {
       <Dialog>
         <div className="flex justify-center">
           <DialogTrigger asChild>
-            <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded" onClick={handleEdit}>
-              {editMode ? 'Edit Note' : 'Open Details'}
+            <button
+              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded"
+              onClick={handleEdit}
+            >
+              Edit Note
             </button>
           </DialogTrigger>
         </div>
@@ -208,27 +232,33 @@ function NoteDetails() {
                       readOnly
                       className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
                     />
-                    <label className="text-gray-700 dark:text-gray-300">{todo.title}</label>
+                    <label className="text-gray-700 dark:text-gray-300">
+                      {todo.title}
+                    </label>
                   </li>
                 ))}
               </ul>
             )}
-            {editMode && editedNote.todoList && editedNote.todoList.length > 0 && (
-              <ul className="mt-2">
-                {editedNote.todoList.map((todo, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name={index.toString()}
-                      checked={todo.isComplete}
-                      onChange={handleChange}
-                      className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                    />
-                    <label className="text-gray-700 dark:text-gray-300">{todo.title}</label>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {editMode &&
+              editedNote.todoList &&
+              editedNote.todoList.length > 0 && (
+                <ul className="mt-2">
+                  {editedNote.todoList.map((todo, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        name={index.toString()}
+                        checked={todo.isComplete}
+                        onChange={handleChange}
+                        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                      />
+                      <label className="text-gray-700 dark:text-gray-300">
+                        {todo.title}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              )}
             {editMode && (
               <div className="mt-4 flex flex-row">
                 <input
@@ -239,7 +269,10 @@ function NoteDetails() {
                   placeholder="Enter new todo..."
                   className="px-4 py-2 w-full border border-gray-700 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-300"
                 />
-                <button onClick={handleAddTodo} className="ml-2 px-4 py-2 bg-green-600 text-white rounded">
+                <button
+                  onClick={handleAddTodo}
+                  className="ml-2 px-4 py-2 bg-green-600 text-white rounded"
+                >
                   +
                 </button>
               </div>
@@ -248,27 +281,36 @@ function NoteDetails() {
           <DialogFooter>
             {editMode ? (
               <>
-                <button onClick={handleSaveChanges} className="mt-4 px-4 py-2 bg-green-600 text-white rounded">
+                <button
+                  onClick={handleSaveChanges}
+                  className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
+                >
                   Save Changes
                 </button>
-                <button onClick={handleCancelEdit} className="mt-4 px-4 py-2 bg-gray-400 text-white rounded">
+                <button
+                  onClick={handleCancelEdit}
+                  className="mt-4 px-4 py-2 bg-gray-400 text-white rounded"
+                >
                   Cancel
                 </button>
-                <button onClick={handleDelete} className="mt-4 px-4 py-2 bg-red-600 text-white rounded">
+                <button
+                  onClick={handleDelete}
+                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded"
+                >
                   Delete Note
                 </button>
               </>
             ) : (
               <DialogClose asChild>
-                <button className="mt-4 px-4 py-2 bg-red-600 text-white rounded">Close</button>
+                <button className="mt-4 px-4 py-2 bg-red-600 text-white rounded">
+                  Close
+                </button>
               </DialogClose>
             )}
-         
-
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <Toaster/>
+      <Toaster />
     </>
   );
 }

@@ -18,6 +18,8 @@ import {
 
 function Header() {
   const { loggedInUser, logout } = useContext(AuthContext);
+
+  if (loggedInUser === undefined) return;
   return (
     <header className="bg-white/5 px-4 flex justify-between items-center h-14">
       <div className="flex items-center gap-2">
