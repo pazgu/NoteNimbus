@@ -5,14 +5,17 @@ import { formatJWTTokenToUser } from "../utils/utils";
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState(undefined);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       const user = formatJWTTokenToUser(token);
       if (user !== null) {
-        setLoggedInUser({token });
+        return setLoggedInUser({ ...user, token });
+      }
+      if (!user) {
+        return setLoggedInUser(null);
       }
     }
   }, []);
@@ -35,7 +38,6 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
-
 
 // import api from "@/lib/api";
 // import { useLocalStorage } from "@uidotdev/usehooks";

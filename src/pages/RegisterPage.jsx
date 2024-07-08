@@ -16,7 +16,6 @@ import { useState } from "react";
 import api from "@/services/api.service";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { Toast } from "@/components/ui/toast";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -48,14 +47,16 @@ function RegisterPage() {
         throw new Error(errorMessage);
       }
       await api.post(`auth/register`, newUser);
-      navigate('/auth/login')
+      navigate("/auth/login");
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        errorMessage = "User already exists. Please choose a different username.";
+        errorMessage =
+          "User already exists. Please choose a different username.";
       } else if (passwordMatch === false) {
-        errorMessage = "Password do not match. Please try again."
+        errorMessage = "Password do not match. Please try again.";
       } else {
-        errorMessage = "An error occurred during registration. Please try again.";
+        errorMessage =
+          "An error occurred during registration. Please try again.";
       }
       toast({
         variant: "destructive",
@@ -86,47 +87,54 @@ function RegisterPage() {
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div>
             <Label>Username:</Label>
-            <Input 
-              placeholder="Enter username..." 
+            <Input
+              placeholder="Enter username..."
               name="username"
               value={formData.username}
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </div>
           <div>
             <Label>Password:</Label>
-            <Input type="password" 
-              placeholder="Enter password..." 
+            <Input
+              type="password"
+              placeholder="Enter password..."
               name="password"
               value={formData.password}
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </div>
           <div>
             <Label>Confirm password:</Label>
-            <Input type="password" 
-              placeholder="Enter password again..." 
+            <Input
+              type="password"
+              placeholder="Enter password again..."
               name="confirmPassword"
               value={formData.confirmPassword}
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </div>
           <div>
             <Label>First name:</Label>
-            <Input 
-              placeholder="Enter first name..." 
+            <Input
+              placeholder="Enter first name..."
               name="firstName"
               value={formData.firstName}
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </div>
           <div>
             <Label>Last name:</Label>
-            <Input 
-              placeholder="Enter last name..." 
+            <Input
+              placeholder="Enter last name..."
               name="lastName"
               value={formData.lastName}
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </div>
           <Button>Register</Button>
         </form>
-        <Toaster/>
+        <Toaster />
       </CardContent>
       <CardFooter>
         <p className="text-xs">
