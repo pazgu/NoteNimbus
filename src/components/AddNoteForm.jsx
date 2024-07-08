@@ -70,9 +70,7 @@ function AddNoteForm() {
         description: "Your new note has been successfully added.",
         status: "success",
       });
-      setTimeout(() => {
-        navigateBack(`/notes/${loggedInUser.userId}`);
-      }, 1000);
+      navigateBack(`/notes/${loggedInUser.userId}`);
     } catch (error) {
       console.error("Error creating note:", error);
     } finally {
