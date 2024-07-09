@@ -37,6 +37,7 @@ function NoteDetails() {
   const [editMode, setEditMode] = useState(false);
   const [editedNote, setEditedNote] = useState(null);
   const [newTodo, setNewTodo] = useState("");
+  const [deletingImage, setDeletingImage] = useState(false);
   const [isOpen, setIsOpen] = useState(false); //to alert confirm
   const navigate = useNavigate();
 
@@ -131,6 +132,21 @@ function NoteDetails() {
     setIsOpen(false);
   }
 
+  async function handleDeleteImage() {
+    const updatedNote = { ...editedNote, imageUrl: null };
+    setEditedNote(updatedNote);
+    try {
+      setDeletingImage(true);
+      await api.delete(`/notes/${note._id}/image`);
+      setNote(updatedNote);
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      setEditedNote({ ...editedNote, imageUrl: note.imageUrl });
+    } finally {
+      setDeletingImage(false);
+    }
+  }
+
   if (loading) {
     return <div className="loader"></div>;
   }
@@ -173,7 +189,7 @@ function NoteDetails() {
           <Note note={note} />
         </div>
       </div>
-      <Dialog>
+      <Dialog className="h-auto max-h-screen">
         <div className="flex justify-center">
           <DialogTrigger asChild>
             <button
@@ -185,7 +201,7 @@ function NoteDetails() {
           </DialogTrigger>
         </div>
         <DialogTitle></DialogTitle>
-        <DialogContent>
+        <DialogContent className="overflow-y-auto max-h-[calc(100vh-10rem)] scrollbar-thin">
           <DialogHeader>
             {editMode ? (
               <input
@@ -274,6 +290,22 @@ function NoteDetails() {
                   className="ml-2 px-4 py-2 bg-green-600 text-white rounded"
                 >
                   +
+                </button>
+              </div>
+            )}
+            {note.imageUrl && (
+              <div className="mt-4 relative">
+                <img
+                  src={note.imageUrl}
+                  alt="Note"
+                  className="w-full h-auto max-h-64 object-cover rounded-lg"
+                />
+                <button
+                  onClick={handleDeleteImage}
+                  className="absolute top-2 right-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600"
+                  disabled={deletingImage}
+                >
+                  {deletingImage ? "Deleting..." : "Delete Image"}
                 </button>
               </div>
             )}
