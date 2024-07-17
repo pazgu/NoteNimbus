@@ -65,7 +65,6 @@ function NoteDetails() {
     setEditMode(true);
     setEditedNote({ ...note });
     setCollaborators(note.collaborators || []);
-    console.log("note.collaborators", note.collaborators);
   }
 
   function handleCancelEdit() {
@@ -159,7 +158,11 @@ function NoteDetails() {
           email: collaboratorEmail,
         }
       );
-      setCollaborators([...collaborators, response.data]);
+      setNote((prevNote) => ({
+        ...prevNote,
+        collaborators: response.data.collaborators,
+      }));
+      setCollaborators([...collaborators, collaboratorEmail]);
       setCollaboratorEmail("");
       toast({
         title: "Collaborator Invited",
@@ -385,7 +388,6 @@ function NoteDetails() {
               </div>
             </div>
           )}
-          {/* Display Collaborators */}
           {editMode && collaborators.length > 0 && (
             <div className="mt-4">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">
