@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pin, PinOff } from "lucide-react";
+import { Pin, PinOff, UserPlus } from "lucide-react";
 
 function NotesPage() {
   const [notes, setNotes] = useState([]);
@@ -74,7 +74,12 @@ function NotesPage() {
     );
   }
 
-  const sortedNotes = [...notes].sort((a, b) => b.isPinned - a.isPinned);
+  const sortedNotes = [...notes].sort((a, b) => {
+    if (a.isPinned === b.isPinned) {
+      return b.collaborators ? 1 : -1; // Show shared notes after personal notes
+    }
+    return b.isPinned - a.isPinned;
+  });
 
   return (
     <div className="container mx-auto p-4">
@@ -111,10 +116,11 @@ function NotesPage() {
                   <TableCell>Title</TableCell>
                   <TableCell>Description</TableCell>
                   <TableCell>Selected Todos</TableCell>
+                  <TableCell>Shared</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {notes.map((note) => (
+                {sortedNotes.map((note) => (
                   <TableRow key={note._id}>
                     <TableCell>{note.title}</TableCell>
                     <TableCell>{note.description}</TableCell>
@@ -129,6 +135,11 @@ function NotesPage() {
                         {note.todoList.filter((todo) => todo.isComplete).length}
                       </span>
                     </TableCell>
+                    <TableCell>
+                      {note.collaborators && note.collaborators.length > 0 && (
+                        <UserPlus className="text-blue-500" />
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -142,18 +153,23 @@ function NotesPage() {
                   className="relative"
                 >
                   <Note note={note} />
-                  <div
-                    className="absolute top-2 right-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      togglePin(note._id);
-                    }}
-                  >
-                    {note.isPinned ? (
-                      <Pin className="text-yellow-500" />
-                    ) : (
-                      <PinOff className="text-gray-500" />
+                  <div className="absolute top-2 right-2 flex">
+                    {note.collaborators && note.collaborators.length > 0 && (
+                      <UserPlus className="text-blue-500 mr-2" />
                     )}
+                    <div
+                      className="cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        togglePin(note._id);
+                      }}
+                    >
+                      {note.isPinned ? (
+                        <Pin className="text-yellow-500" />
+                      ) : (
+                        <PinOff className="text-gray-500" />
+                      )}
+                    </div>
                   </div>
                 </Link>
               ))}

@@ -171,6 +171,10 @@ function NoteDetails() {
       });
     } catch (error) {
       console.error("Error inviting collaborator:", error);
+      if (error.response && error.response.status === 403) {
+        setError("You don't have permission to view this note.");
+        console.log(error);
+      }
       if (error.response.status === 404) {
         toast({
           title: "Error",
