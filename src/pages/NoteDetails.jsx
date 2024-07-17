@@ -36,6 +36,8 @@ function NoteDetails() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [editedNote, setEditedNote] = useState(null);
+  const [collaboratorEmail, setCollaboratorEmail] = useState("");
+  const [collaborators, setCollaborators] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const [deletingImage, setDeletingImage] = useState(false);
   const [isOpen, setIsOpen] = useState(false); //to alert confirm
@@ -62,6 +64,7 @@ function NoteDetails() {
   function handleEdit() {
     setEditMode(true);
     setEditedNote({ ...note });
+    setCollaborators(note.collaborators || []);
   }
 
   function handleCancelEdit() {
@@ -146,6 +149,32 @@ function NoteDetails() {
       setDeletingImage(false);
     }
   }
+
+  const handleInviteCollaborator = async () => {
+    try {
+      const response = await api.post(
+        `/notes/${loggedInUser.userId}/${note._id}/invite`,
+        {
+          email: collaboratorEmail,
+        }
+      );
+      console.log(response.data);
+      setCollaborators([...collaborators, response.data]);
+      setCollaboratorEmail("");
+      toast({
+        title: "Collaborator Invited",
+        description: `${collaboratorEmail} has been invited to collaborate.`,
+        status: "success",
+      });
+    } catch (error) {
+      console.error("Error inviting collaborator:", error);
+      toast({
+        title: "Error",
+        description: "There was an error inviting the collaborator.",
+        status: "error",
+      });
+    }
+  };
 
   if (loading) {
     return <div className="loader"></div>;
@@ -310,6 +339,51 @@ function NoteDetails() {
               </div>
             )}
           </div>
+          {editMode && (
+            <div className="mt-4">
+              <label
+                htmlFor="collaboratorEmail"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                Invite Collaborator
+              </label>
+              <div className="mt-1 flex rounded-md shadow-sm">
+                <input
+                  type="email"
+                  name="collaboratorEmail"
+                  id="collaboratorEmail"
+                  value={collaboratorEmail}
+                  onChange={(e) => setCollaboratorEmail(e.target.value)}
+                  className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
+                  placeholder="Enter email"
+                />
+                <button
+                  type="button"
+                  onClick={handleInviteCollaborator}
+                  className="ml-2 px-4 py-2 bg-green-600 text-white rounded-r-md"
+                >
+                  Invite
+                </button>
+              </div>
+            </div>
+          )}
+          {/* Display Collaborators */}
+          {editMode && collaborators.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                Collaborators
+              </h3>
+              <ul className="mt-2">
+                {collaborators.map((collaborator, index) => (
+                  <li key={index} className="flex items-center justify-between">
+                    <span className="text-gray-700 dark:text-gray-200">
+                      {collaborator.email}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <DialogFooter>
             {editMode ? (
               <>

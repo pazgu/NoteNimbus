@@ -27,6 +27,7 @@ function RegisterPage() {
     confirmPassword: "",
     firstName: "",
     lastName: "",
+    email: "",
   });
 
   const handleSubmit = async (event) => {
@@ -41,6 +42,7 @@ function RegisterPage() {
         confirmPassword: formData.confirmPassword,
         firstName: formData.firstName,
         lastName: formData.lastName,
+        email: formData.email,
       };
       if (formData.password !== formData.confirmPassword) {
         passwordMatch = false;
@@ -129,6 +131,16 @@ function RegisterPage() {
               placeholder="Enter last name..."
               name="lastName"
               value={formData.lastName}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label>Email:</Label>
+            <Input
+              type="email"
+              placeholder="Enter email..."
+              name="email"
+              value={formData.email}
               onChange={handleChange}
             />
           </div>
