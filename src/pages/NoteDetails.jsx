@@ -65,6 +65,7 @@ function NoteDetails() {
     setEditMode(true);
     setEditedNote({ ...note });
     setCollaborators(note.collaborators || []);
+    console.log("note.collaborators", note.collaborators);
   }
 
   function handleCancelEdit() {
@@ -160,6 +161,7 @@ function NoteDetails() {
       );
       console.log(response.data);
       setCollaborators([...collaborators, response.data]);
+      console.log(collaborators);
       setCollaboratorEmail("");
       toast({
         title: "Collaborator Invited",
@@ -374,10 +376,10 @@ function NoteDetails() {
                 Collaborators
               </h3>
               <ul className="mt-2">
-                {collaborators.map((collaborator, index) => (
+                {collaborators.map((email, index) => (
                   <li key={index} className="flex items-center justify-between">
                     <span className="text-gray-700 dark:text-gray-200">
-                      {collaborator.email}
+                      {email}
                     </span>
                   </li>
                 ))}
