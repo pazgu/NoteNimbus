@@ -151,7 +151,7 @@ function NoteDetails() {
     }
   }
 
-  const handleInviteCollaborator = async () => {
+  async function handleInviteCollaborator() {
     try {
       const response = await api.post(
         `/notes/${loggedInUser.userId}/${note._id}/invite`,
@@ -159,9 +159,7 @@ function NoteDetails() {
           email: collaboratorEmail,
         }
       );
-      console.log(response.data);
       setCollaborators([...collaborators, response.data]);
-      console.log(collaborators);
       setCollaboratorEmail("");
       toast({
         title: "Collaborator Invited",
@@ -170,13 +168,31 @@ function NoteDetails() {
       });
     } catch (error) {
       console.error("Error inviting collaborator:", error);
+      if (error.response.status === 404) {
+        toast({
+          title: "Error",
+          description:
+            "User not found. Please check the email address and try again.",
+          status: "error",
+        });
+        return;
+      }
+      if (error.response.status === 400) {
+        toast({
+          title: "Error",
+          description:
+            "Collaborator already invited and this note is shared with.",
+          status: "error",
+        });
+        return;
+      }
       toast({
         title: "Error",
         description: "There was an error inviting the collaborator.",
         status: "error",
       });
     }
-  };
+  }
 
   if (loading) {
     return <div className="loader"></div>;
@@ -356,7 +372,7 @@ function NoteDetails() {
                   id="collaboratorEmail"
                   value={collaboratorEmail}
                   onChange={(e) => setCollaboratorEmail(e.target.value)}
-                  className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
+                  className="px-4 py-2 w-full border border-gray-700 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring focus:border-blue-300"
                   placeholder="Enter email"
                 />
                 <button
