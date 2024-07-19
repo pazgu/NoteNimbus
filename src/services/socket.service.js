@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === "production") {
   // In production, connect to the same host
   socket = io();
 } else {
-  // In development, connect to localhost:3000
+  // In development
   socket = io("http://localhost:3000");
 }
 

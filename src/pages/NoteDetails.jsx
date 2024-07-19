@@ -141,14 +141,31 @@ function NoteDetails() {
   async function handleConfirmDelete() {
     try {
       setIsOpen(false);
-      await api.delete(`notes/${loggedInUser.userId}/${id}`);
-      navigate(-1);
+      const response = await api.delete(`notes/${loggedInUser.userId}/${id}`);
+      if (response.data.message === "Removed from shared note successfully") {
+        toast({
+          title: "Removed from shared note",
+          description: "You have been removed from this shared note.",
+          status: "success",
+        });
+      } else {
+        toast({
+          title: "Note deleted",
+          description: "The note has been successfully deleted.",
+          status: "success",
+        });
+      }
+      navigate(`/notes/${loggedInUser.userId}`);
     } catch (error) {
       setError(error);
       setIsOpen(false);
+      toast({
+        title: "Error",
+        description: "There was an error deleting the note.",
+        status: "error",
+      });
     }
   }
-
   function handleCancelDelete() {
     setIsOpen(false);
   }
