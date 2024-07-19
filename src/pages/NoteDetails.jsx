@@ -27,6 +27,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
+import {
+  joinNote,
+  leaveNote,
+  onNoteUpdated,
+  offNoteUpdated,
+} from "@/services/socket.service";
 
 function NoteDetails() {
   const { id } = useParams();
@@ -51,6 +57,13 @@ function NoteDetails() {
         const details = response.data;
         setNote(details);
         setLoading(false);
+        // Join the Socket.IO room for this note
+        joinNote(id);
+
+        // Set up listener for real-time updates
+        onNoteUpdated((updatedNote) => {
+          setNote(updatedNote);
+        });
       } catch (error) {
         setError(error);
         setLoading(false);
@@ -59,6 +72,11 @@ function NoteDetails() {
     if (loggedInUser) {
       getNoteById();
     }
+    // Clean up function
+    return () => {
+      leaveNote(id);
+      offNoteUpdated();
+    };
   }, [id, loggedInUser]);
 
   function handleEdit() {

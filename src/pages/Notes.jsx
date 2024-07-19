@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pin, PinOff, UserPlus } from "lucide-react";
+import { onNoteUpdated, offNoteUpdated } from "@/services/socket.service";
 
 function NotesPage() {
   const [notes, setNotes] = useState([]);
@@ -27,6 +28,14 @@ function NotesPage() {
       try {
         const response = await api.get(`/notes/${loggedInUser.userId}`);
         setNotes(response.data.notes);
+        // Set up listener for real-time updates
+        onNoteUpdated((updatedNote) => {
+          setNotes((prevNotes) =>
+            prevNotes.map((note) =>
+              note._id === updatedNote._id ? updatedNote : note
+            )
+          );
+        });
       } catch (error) {
         if (error.response) {
           if (error.response.status === 404) {
@@ -44,6 +53,10 @@ function NotesPage() {
     if (loggedInUser) {
       fetchNotes();
     }
+    // Clean up function
+    return () => {
+      offNoteUpdated();
+    };
   }, [loggedInUser]);
 
   function toggleDisplay() {

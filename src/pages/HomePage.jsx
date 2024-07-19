@@ -95,7 +95,7 @@ function HomePage() {
           interface.
         </p>
       </header>
-      {loggedInUser === undefined && (
+      {loggedInUser === null && (
         <div className="mb-6 mt-6 text-center">
           <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
             Join our community of organized and efficient users. Sign up or log
