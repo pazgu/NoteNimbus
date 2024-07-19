@@ -1,6 +1,15 @@
+/* eslint-disable no-undef */
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+let socket;
+
+if (process.env.NODE_ENV === "production") {
+  // In production, connect to the same host
+  socket = io();
+} else {
+  // In development, connect to localhost:3000
+  socket = io("http://localhost:3000");
+}
 
 export const joinNote = (noteId) => {
   socket.emit("join_note", noteId);
